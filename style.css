@@ -1,0 +1,387 @@
+#intro-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100vh;
+    background: var(--bg-color);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s ease;
+}
+
+.glitch-container {
+    text-align: center;
+}
+
+.glitch {
+    font-family: var(--font-title);
+    font-size: 2.5rem;
+    font-weight: 700;
+    position: relative;
+    color: var(--text-main);
+    letter-spacing: 2px;
+}
+
+/* Effet Glitch CSS pur */
+.glitch::before, .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: var(--bg-color);
+}
+.glitch::before {
+    left: 2px;
+    text-shadow: -1px 0 #00ffff;
+    animation: glitch-anim-1 2s infinite linear alternate-reverse;
+}
+.glitch::after {
+    left: -2px;
+    text-shadow: -1px 0 var(--accent-color);
+    animation: glitch-anim-2 3s infinite linear alternate-reverse;
+}
+
+.loader-text {
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    color: var(--accent-color);
+    font-family: monospace;
+    animation: blink 0.5s infinite;
+}
+
+/* --- BACKGROUND ANIMATION --- */
+#canvas-container {
+    position: fixed;      /* 1. Sort du flux : se colle à l'écran, ne pousse rien */
+    top: 0; 
+    left: 0;
+    width: 100%; 
+    height: 100vh;
+    
+    z-index: -1;          /* 2. Profondeur : Se met DERRIÈRE le texte */
+    
+    pointer-events: none; /* 3. Sécurité : Permet de cliquer à travers (sur les liens) */
+    opacity: 0.4;         /* Optionnel : Règle l'intensité des tirets rouges */
+}
+
+/* Assure-toi que le canvas lui-même prend toute la place */
+#canvas-container canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+/* --- VARIABLES & RESET --- */
+:root {
+    --bg-color: #0a0a0a;
+    --text-main: #ededed;
+    --text-muted: #888;
+    --accent-color: #db0d1e; /* Ton rouge */
+    
+    --font-title: 'Space Grotesk', sans-serif;
+    --font-text: 'Inter', sans-serif;
+    
+    --easing: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: var(--font-text);
+    overflow-x: hidden; /* Empêche le scroll horizontal */
+    line-height: 1.6;
+}
+
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+
+
+/* --- 3. HEADER & NAV --- */
+.main-header {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    mix-blend-mode: difference; /* Le logo reste visible sur fond clair */
+}
+
+.logo {
+    font-family: var(--font-title);
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: -1px;
+}
+
+/* Burger Icon */
+.burger-menu {
+    width: 30px; height: 20px;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.burger-menu span {
+    display: block;
+    width: 100%; height: 2px;
+    background: white;
+    transition: all 0.3s var(--easing);
+}
+
+/* État Actif du Burger (Croix) */
+.burger-menu.active span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+.burger-menu.active span:nth-child(2) { transform: translateY(-9px) rotate(-45deg); }
+
+/* Fullscreen Menu */
+#fullscreen-nav {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100vh;
+    background: var(--bg-color);
+    z-index: 90;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: translateX(100%); /* Caché à droite */
+    transition: transform 0.6s var(--easing);
+}
+#fullscreen-nav.open { transform: translateX(0); }
+
+.nav-links li { margin: 1.5rem 0; text-align: center; overflow: hidden; }
+.nav-item {
+    font-family: var(--font-title);
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--text-muted); /* Effet Outline */
+    transition: all 0.3s;
+    position: relative;
+}
+.nav-item:hover {
+    color: var(--accent-color);
+    -webkit-text-stroke: 0px;
+}
+
+/* --- 4. SECTIONS GENERAL --- */
+main {
+    padding-top: 80px; /* Espace pour le header */
+    position: relative;
+    z-index: 10;
+}
+.section {
+    padding: 4rem 1.5rem;
+    min-height: 50vh;
+}
+.content-wrapper { max-width: 1200px; margin: 0 auto; }
+.section-header { margin-bottom: 3rem; }
+.section-header h3 {
+    font-family: var(--font-title);
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+}
+.line { width: 50px; height: 3px; background: var(--accent-color); }
+
+/* --- HERO --- */
+.hero {
+    height: 90vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+.hero-title {
+    font-family: var(--font-title);
+    font-size: 3.5rem;
+    line-height: 1;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+}
+.hero-subtitle {
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    font-family: monospace;
+}
+.cta-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    border: 1px solid var(--accent-color);
+    color: var(--accent-color);
+    font-family: var(--font-title);
+    font-weight: bold;
+    letter-spacing: 1px;
+    transition: 0.3s;
+}
+.cta-button:hover {
+    background: var(--accent-color);
+    color: var(--bg-color);
+    box-shadow: 0 0 20px rgba(219, 13, 30, 0.5);
+}
+
+/* --- EVENTS --- */
+.event-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid #333;
+    font-family: var(--font-title);
+}
+.event-item .date { color: var(--accent-color); font-weight: bold; }
+.ticket-link {
+    font-size: 0.8rem;
+    border: 1px solid white;
+    padding: 0.3rem 0.8rem;
+    transition: 0.2s;
+}
+.ticket-link:hover { background: white; color: black; }
+
+/* --- GALERIE INSTAGRAM --- */
+.gallery-grid {
+    display: grid;
+    /* Crée autant de colonnes que possible, avec une largeur min de 300px */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem; /* Espace entre les posts */
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.gallery-item {
+    /* C'est ICI qu'on réduit la taille */
+    width: 100%;
+    max-width: 350px; /* Taille idéale pour un post Insta vertical */
+    margin: 0 auto;   /* Centre l'élément dans sa case de grille */
+    
+    /* Petit style Techno supplémentaire */
+    border: 1px solid #333;
+    background: #000;
+    transition: transform 0.3s var(--easing), border-color 0.3s;
+}
+
+/* Effet au survol : on met en valeur le post */
+.gallery-item:hover {
+    border-color: var(--accent-color);
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(219, 13, 30, 0.2);
+}
+
+/* Force le contenu Instagram à respecter la limite */
+.gallery-item iframe, 
+.gallery-item blockquote {
+    max-width: 100% !important; /* Force brute pour écraser le style Instagram */
+    width: 100% !important;
+    min-width: auto !important; /* Annule la largeur min d'Instagram */
+    border-radius: 0 !important; /* Enlève les bords ronds d'Insta pour faire plus "raw" */
+    margin: 0 !important;
+}
+
+ 
+
+/* --- FOOTER --- */
+footer {
+    padding: 2rem;
+    border-top: 1px solid #333;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+.footer-content {
+    display: ruby;
+    justify-content: space-between;
+}
+
+.socials a:hover { color: var(--accent-color); }
+
+/* --- ANIMATIONS KEYFRAMES --- */
+@keyframes glitch-anim-1 {
+    0% { clip-path: inset(20% 0 80% 0); }
+    20% { clip-path: inset(60% 0 10% 0); }
+    40% { clip-path: inset(40% 0 50% 0); }
+    60% { clip-path: inset(80% 0 5% 0); }
+    80% { clip-path: inset(10% 0 70% 0); }
+    100% { clip-path: inset(30% 0 20% 0); }
+}
+@keyframes glitch-anim-2 {
+    0% { clip-path: inset(10% 0 60% 0); }
+    20% { clip-path: inset(30% 0 20% 0); }
+    40% { clip-path: inset(10% 0 80% 0); }
+    60% { clip-path: inset(70% 0 10% 0); }
+    80% { clip-path: inset(50% 0 30% 0); }
+    100% { clip-path: inset(20% 0 40% 0); }
+}
+@keyframes blink { 50% { opacity: 0; } }
+
+/* --- RESPONSIVE DESKTOP --- */
+@media (min-width: 768px) {
+    .hero-title { font-size: 6rem; }
+    .newsletter-form { flex-direction: row; justify-content: center; }
+    .newsletter-form input { width: 300px; }
+}
+/* --- COMPTE À REBOURS (TIMER) --- */
+#timer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%); /* Petit effet de halo sombre */
+}
+
+#countdown-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem; /* Espace entre les blocs */
+    font-family: var(--font-title); /* Space Grotesk ou ta police custom */
+}
+
+.time-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.time-number {
+    font-size: 4rem; /* Très gros */
+    font-weight: 700;
+    line-height: 1;
+    color: #ededed;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2); /* Légère lueur */
+}
+
+.time-label {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    font-family: monospace;
+    color: var(--accent-color); /* Rouge #db0d1e */
+    letter-spacing: 2px;
+}
+
+.separator {
+    font-size: 3rem;
+    color: #333;
+    margin-bottom: 1.5rem; /* Ajustement vertical pour s'aligner avec les chiffres */
+    animation: pulse 1s infinite; /* Clignotement des deux points */
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* Responsive Mobile : On réduit la taille */
+@media (max-width: 768px) {
+    .time-number { font-size: 2.5rem; }
+    .separator { font-size: 2rem; margin-bottom: 1rem; }
+    #countdown-container { gap: 0.5rem; }
+}
