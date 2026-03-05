@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // --- CONFIGURATION : CHANGE LA DATE ICI ---
     // Format : "YYYY-MM-DDTHH:MM:00"
-    const nextEventDate = new Date("2025-12-31T23:00:00").getTime(); 
+    const nextEventDate = new Date("2026-03-14T23:00:00").getTime(); 
 
     const daysEl = document.getElementById("days");
     const hoursEl = document.getElementById("hours");
